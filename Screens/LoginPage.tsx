@@ -123,11 +123,11 @@ function LoginPage(prop) {
         onChangeText={onChangePassword}
         onKeyPress={validatePassword}
       ></TextInput>
-      {validationMessage !== "" && (
+      {/* {validationMessage !== "" && (
         <View style={style.errorMessage}>
           <Text style={style.errorText}>{validationMessage}</Text>
         </View>
-      )}
+      )} */}
       <View style={style.styleView}>
         <TouchableOpacity
           style={[style.buttonLogin, style.customButton]}

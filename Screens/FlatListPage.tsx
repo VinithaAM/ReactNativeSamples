@@ -42,15 +42,15 @@ function DataCorrectionListPage(prop: Proptype) {
       setListData(result.data.data);
     });
   };
-  const fetchUser = async () => {
-    const configurationObject = {
-      method: "get",
-      url: "https://jsonplaceholder.typicode.com/comments?postId=1",
-    };
-    const response = await axios(configurationObject);
+  // const fetchUser = async () => {
+  //   const configurationObject = {
+  //     method: "get",
+  //     url: "https://jsonplaceholder.typicode.com/comments?postId=1",
+  //   };
+  //   const response = await axios(configurationObject);
 
-    setListData(response.data);
-  };
+  //   setListData(response.data);
+  // };
 
   useEffect(() => {
     setTimeout(() => {

@@ -106,10 +106,6 @@ export const MasterHistoryData = async () => {
     console.log("err", error);
     return error.response;
   }
-  //   await refreshToken().then((result) => {
-  //    localStorage.setItem("LoginResponse", JSON.stringify(result.data.data));
-  //  });
-  //return axiosInstance.get("/HistoryData/Get");
 };
 // API Call for New item add
 export const AddNewItem = async (ItemDetails: any) => {
@@ -124,32 +120,36 @@ export const AddNewItem = async (ItemDetails: any) => {
     return error.response.data;
   }
 };
-
+export const updateCorrectionDetails = async (updateDetails: any) => {
+  try {
+    const result = await axios.put(
+      url + `/HistoryData/Update`,
+      updateDetails,
+      requestConfig
+    );
+    return result;
+  } catch (error) {
+    return error.response.data;
+  }
+};
+export const deleteCorrection = async (id: any) => {
+  try {
+    const result = await axios.delete(
+      url + `/HistoryData/Delete?id=${id}`,
+      requestConfig
+    );
+    return result;
+  } catch (error) {
+    return error.response.data;
+  }
+};
 // export const getMasterHistoryData = async () => {
 //   // await refreshToken().then((result) => {
 //   //   localStorage.setItem("LoginResponse", JSON.stringify(result.data.data));
 //   // });
 //   return axiosInstance.get("http://localhost:7028/api/MasterHistoryData/Get");
 // };
-// export const deleteCorrection = async (id: any) => {
-//   // await refreshToken().then((result) => {
-//   //   localStorage.setItem("LoginResponse", JSON.stringify(result.data.data));
-//   // });
-//   return axiosInstance.delete("http://localhost:7028/api/HistoryData/Delete", {
-//     params: {
-//       id: id,
-//     },
-//   });
-// };
-// export const updateCorrectionDetails = async (updateDetails: any) => {
-//   // await refreshToken().then((result) => {
-//   //   localStorage.setItem("LoginResponse", JSON.stringify(result.data.data));
-//   // });
-//   return axiosInstance.put(
-//     "http://localhost:7028/api/HistoryData/Update",
-//     updateDetails
-//   );
-// };
+
 // export const searchDetails = async (searchtext: any) => {
 //   // await refreshToken().then((result) => {
 //   //   localStorage.setItem("LoginResponse", JSON.stringify(result.data.data));

@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Pressable,
   Platform,
+  Button,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -15,6 +16,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ScreenType } from "./StackNavigation";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { AddNewItem, MasterHistoryData } from "../Services/CommonService";
+import RNDateTimePicker from "@react-native-community/datetimepicker";
 
 type typeprop = NativeStackScreenProps<ScreenType, "AddNew">;
 function AddNewPage(prop: typeprop) {
@@ -39,6 +41,7 @@ function AddNewPage(prop: typeprop) {
   const [status, setstatus] = useState("");
   const [value, setValue] = useState("");
   const [masterValue, setMasterValue] = useState([]);
+  const [showDatePick, setShowDatePicker] = useState(false);
   function handleClear() {
     sethistoryId("");
     settimeStamp("");
@@ -64,6 +67,7 @@ function AddNewPage(prop: typeprop) {
     console.log(type, selectedDate);
     if (type == "set") {
       const currentdate = selectedDate;
+      //setDate(currentdate);
       settimeStamp(currentdate);
       if (Platform.OS === "android") {
         settimeStamp(currentdate);
@@ -84,18 +88,23 @@ function AddNewPage(prop: typeprop) {
       correctedValue: correctionValue,
       createdBy: 1,
     };
-    try {
-      AddNewItem(params)
-        .then((result: any) => {
-          if (result.data != null) {
-            navigation.navigate("FlatListPage");
-          }
-        })
-        .catch((error: any) => {
-          console.log("Error occurred", error);
-        });
-    } catch (error) {
-      console.log("Error occured", error);
+    console.log("pa", params);
+    if (historyId != "" && correctionValue != "" && status != "") {
+      try {
+        AddNewItem(params)
+          .then((result: any) => {
+            if (result.data != null) {
+              navigation.navigate("FlatListPage");
+            }
+          })
+          .catch((error: any) => {
+            console.log("Error occurred", error);
+          });
+      } catch (error) {
+        console.log("Error occured", error);
+      }
+    } else {
+      alert("Please Fill the form");
     }
   };
   useEffect(() => {
@@ -108,7 +117,14 @@ function AddNewPage(prop: typeprop) {
       setMasterValue(result.data.data);
     });
   };
-
+  const onChangeDate = (event, selectedDate) => {
+    setShowDatePicker(Platform.OS === "ios");
+    if (selectedDate) {
+      setDate(selectedDate);
+      settimeStamp(selectedDate);
+      // Perform any actions with the selected date
+    }
+  };
   return (
     <>
       <View style={style.container}>
@@ -164,25 +180,19 @@ function AddNewPage(prop: typeprop) {
         </View>
         <View style={style.insideContainer}>
           <Text style={style.inputTitle}>TimeStamp </Text>
-          <Pressable onPress={showDatePicker}>
+          <Pressable onPress={() => setShowDatePicker(true)}>
             <Text style={style.Datepicker}>Select TimeStamp</Text>
           </Pressable>
-          {isDatePickerVisible && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              mode="datetime"
-              display="spinner"
+          {showDatePick && (
+            <RNDateTimePicker
               value={date}
-              onChange={onChange}
-            ></DateTimePicker>
+              mode="date"
+              display="spinner"
+              onChange={onChangeDate}
+            />
           )}
-          {/* <TextInput
-          placeholder="Choose the Date"
-          style={style.textInput}
-          value={timeStamp}
-          onChangeText={onChangetime}
-        ></TextInput> */}
         </View>
+
         <View style={style.styleView}>
           <TouchableOpacity
             style={[style.buttonLogin, style.customButton]}
@@ -329,10 +339,10 @@ const style = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
     borderColor: "blue",
-    backgroundColor: "gray",
+    backgroundColor: "#4287f5",
     marginRight: 100,
     marginLeft: 10,
-    width: 200,
+    width: 150,
     alignContent: "center",
     justifyContent: "center",
     //paddingLeft: 15,

@@ -29,7 +29,7 @@ function StackNavigation() {
       }}
     >
       {/* <Stack.Screen name="WelcomePage" component={WelcomePage} /> */}
-      <Stack.Screen name="WelcomePage" component={WelcomePage} />
+      {/* <Stack.Screen name="WelcomePage" component={WelcomePage} /> */}
       <Stack.Screen
         name="LoginPage"
         component={LoginPage}

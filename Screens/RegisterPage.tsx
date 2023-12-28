@@ -72,6 +72,7 @@ function RegistrationPage(prop: typeprop) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isValidEmail = emailRegex.test(input);
     setIsValidEmail(isValidEmail);
+    console.log("ema", isValidEmail);
   }
   // const validatePassword = (input: string) => {
   //   const passwordRegex =
@@ -142,12 +143,7 @@ function RegistrationPage(prop: typeprop) {
       alert("Please Fill detail in the form....");
     }
   };
-  const state = {
-    showStart: false,
-    showEnd: false,
-    start: "",
-    end: "",
-  };
+
   const [date, setDate] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const showDatePicker = () => {
@@ -240,6 +236,11 @@ function RegistrationPage(prop: typeprop) {
         maxLength={30}
         onChangeText={handleChangeemail}
       ></TextInput>
+      {!isValid && (
+        <View style={style.errorMessage}>
+          <Text style={style.errorText}>Please Enter Proper Email</Text>
+        </View>
+      )}
       <Text style={style.inputTitle}>Password</Text>
       <TextInput
         placeholder="Enter the Password"
@@ -265,6 +266,11 @@ function RegistrationPage(prop: typeprop) {
         maxLength={30}
         onChangeText={handleChangeconfirmPassword}
       ></TextInput>
+      {!passwordsMatch && (
+        <View style={style.errorMessage}>
+          <Text style={style.errorText}>Password Doesn't Match</Text>
+        </View>
+      )}
       <View style={style.insideContainer}>
         <Text style={style.inputTitle}>DOB</Text>
         <Pressable onPress={showDatePicker}>
