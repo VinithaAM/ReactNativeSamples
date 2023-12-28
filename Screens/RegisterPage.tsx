@@ -16,16 +16,12 @@ import {
   Pressable,
 } from "react-native";
 import { ScreenType } from "./StackNavigation";
-//import { register } from "../Services/CommonService";
-// import { register } from "../Services/CommonService";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { register } from "../Services/CommonService";
 
 type typeprop = NativeStackScreenProps<ScreenType, "RegistrationPage">;
 function RegistrationPage(prop: typeprop) {
   const { navigation } = prop;
-  //const [date, setDate] = useState(new Date());
-  // const [showDatePicker, setShowDatePicker] = useState(false);
   const [firstName, setfirstName] = useState("");
   const [lastName, setlastName] = useState("");
   const [email, setEmail] = useState("");
@@ -37,18 +33,6 @@ function RegistrationPage(prop: typeprop) {
   const [isValidPassword, setIsValidPassword] = useState<boolean>(true);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  // const showDatePicker = () => {
-  //   setDatePickerVisible(true);
-  // };
-
-  // const hideDatePicker = () => {
-  //   setDatePickerVisible(false);
-  // };
-
-  // const handleConfirm = (date: any) => {
-  //   setSelectedDate(date);
-  //   hideDatePicker();
-  // };
   function handleChangefirstname(event: any) {
     const value = event;
     const sanitizedValue = value.replace(/[^a-zA-Z]/g, "");
@@ -89,12 +73,12 @@ function RegistrationPage(prop: typeprop) {
     const isValidEmail = emailRegex.test(input);
     setIsValidEmail(isValidEmail);
   }
-  const validatePassword = (input: string) => {
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    const isValidPassword = passwordRegex.test(input);
-    setIsValidPassword(isValidPassword);
-  };
+  // const validatePassword = (input: string) => {
+  //   const passwordRegex =
+  //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  //   const isValidPassword = passwordRegex.test(input);
+  //   setIsValidPassword(isValidPassword);
+  // };
 
   const changeDate = (e: any) => {
     console.log(e);
@@ -178,7 +162,6 @@ function RegistrationPage(prop: typeprop) {
       if (Platform.OS === "android") {
         setDOB(currentdate);
         console.log(currentdate);
-        // console.log(date);
       }
       showDatePicker();
     } else {
@@ -193,6 +176,39 @@ function RegistrationPage(prop: typeprop) {
     setSelectedDate(date);
     hideDatePicker();
   };
+  const [validationMessage, setValidationMessage] = useState("");
+  const validatePassword = (password) => {
+    // Password policies
+    const minLength = 8;
+    const maxLength = 20;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
+
+    // Check against policies
+    if (password.length < minLength || password.length > maxLength) {
+      setValidationMessage("Password must be between 8 and 20 characters");
+    } else if (!hasUppercase || !hasLowercase) {
+      setValidationMessage(
+        "Password must contain both uppercase and lowercase letters"
+      );
+    } else if (!hasNumber) {
+      setValidationMessage("Password must contain at least one number");
+    } else if (!hasSpecialChar) {
+      setValidationMessage(
+        "Password must contain at least one special character"
+      );
+    } else {
+      setValidationMessage("Password is valid");
+    }
+  };
+
+  // Usage
+  const passwords = "SamplePassword123!";
+  //const validationMessage = validatePassword(password);
+  // console.log(validationMessage); // Output the validation message
+
   return (
     <View style={style.container}>
       <Text style={style.textTitle}>Sign Up Form</Text>
@@ -202,6 +218,7 @@ function RegistrationPage(prop: typeprop) {
         placeholder="Enter the Firstame"
         style={style.textInput}
         value={firstName}
+        maxLength={30}
         onChangeText={handleChangefirstname}
       ></TextInput>
       <Text style={style.inputTitle}>Lastname</Text>
@@ -209,12 +226,49 @@ function RegistrationPage(prop: typeprop) {
         placeholder="Enter the Lastname"
         style={style.textInput}
         value={lastName}
+        maxLength={30}
         onChangeText={handleChangelastname}
+      ></TextInput>
+
+      <Text style={style.inputTitle}>Username</Text>
+      <TextInput
+        placeholder="Enter the Username"
+        style={style.textInput}
+        value={email}
+        keyboardType="email-address"
+        autoCapitalize="none"
+        maxLength={30}
+        onChangeText={handleChangeemail}
+      ></TextInput>
+      <Text style={style.inputTitle}>Password</Text>
+      <TextInput
+        placeholder="Enter the Password"
+        style={style.textInput}
+        value={password}
+        secureTextEntry={true}
+        maxLength={30}
+        onChangeText={handleChangepassword}
+        onKeyPress={validatePassword}
+      ></TextInput>
+      {validationMessage !== "" &&
+        validationMessage !== "Password is valid" && (
+          <View style={style.errorMessage}>
+            <Text style={style.errorText}>{validationMessage}</Text>
+          </View>
+        )}
+      <Text style={style.inputTitle}>Confirm Password</Text>
+      <TextInput
+        placeholder="Enter the confirmPassword"
+        style={style.textInput}
+        value={confirmPassword}
+        secureTextEntry={true}
+        maxLength={30}
+        onChangeText={handleChangeconfirmPassword}
       ></TextInput>
       <View style={style.insideContainer}>
         <Text style={style.inputTitle}>DOB</Text>
         <Pressable onPress={showDatePicker}>
-          <Text style={style.Datepicker}>select DOB</Text>
+          <Text style={style.Datepicker}>Select DOB</Text>
         </Pressable>
         {isDatePickerVisible && (
           <DateTimePicker
@@ -240,31 +294,6 @@ function RegistrationPage(prop: typeprop) {
           </Pressable>
         )} */}
       </View>
-      <Text style={style.inputTitle}>Username</Text>
-      <TextInput
-        placeholder="Enter the Username"
-        style={style.textInput}
-        value={email}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        onChangeText={handleChangeemail}
-      ></TextInput>
-      <Text style={style.inputTitle}>Password</Text>
-      <TextInput
-        placeholder="Enter the Password"
-        style={style.textInput}
-        value={password}
-        secureTextEntry={true}
-        onChangeText={handleChangepassword}
-      ></TextInput>
-      <Text style={style.inputTitle}>Confirm PassWord</Text>
-      <TextInput
-        placeholder="Enter the confirmPassword"
-        style={style.textInput}
-        value={confirmPassword}
-        secureTextEntry={true}
-        onChangeText={handleChangeconfirmPassword}
-      ></TextInput>
       <View style={style.styleView}>
         <TouchableOpacity
           style={[style.buttonLogin, style.customButton]}
@@ -295,7 +324,6 @@ const style = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    // backgroundColor: "aqua",
   },
   insideContainer: {
     flexDirection: "row",
@@ -336,7 +364,7 @@ const style = StyleSheet.create({
     borderColor: "blue",
   },
   buttonLogin: {
-    backgroundColor: "#69f58e",
+    backgroundColor: "green",
     textAlign: "center",
   },
   buttonClear: {
@@ -351,16 +379,23 @@ const style = StyleSheet.create({
     textAlign: "center",
   },
   Datepicker: {
-    padding: 3,
+    padding: 5,
     borderRadius: 5,
     marginBottom: 10,
-    backgroundColor: "green",
+    backgroundColor: "blue",
     marginRight: 150,
+    color: "white",
     //marginLeft: 25,
   },
   datetime: {
     height: 120,
     marginTop: -10,
+  },
+  errorMessage: {
+    marginTop: 10,
+  },
+  errorText: {
+    color: "red",
   },
   // height:120,
   // marginTop:-10

@@ -17,10 +17,26 @@ export type ScreenType = {
 const Stack = createNativeStackNavigator<ScreenType>();
 function StackNavigation() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "lightblue", // Set your desired background color
+        },
+        headerTintColor: "#fff", // Set the color of the text (title, buttons, etc.)
+        headerTitleStyle: {
+          fontWeight: "bold", // Customize the font style
+        },
+      }}
+    >
       {/* <Stack.Screen name="WelcomePage" component={WelcomePage} /> */}
       <Stack.Screen name="WelcomePage" component={WelcomePage} />
-      <Stack.Screen name="LoginPage" component={LoginPage} />
+      <Stack.Screen
+        name="LoginPage"
+        component={LoginPage}
+        options={{
+          headerBackVisible: false, // This removes the back arrow
+        }}
+      />
       <Stack.Screen name="RegistrationPage" component={RegistrationPage} />
       <Stack.Screen name="FlatListPage" component={FlatListPage} />
       <Stack.Screen name="AddNew" component={AddNewPage} />

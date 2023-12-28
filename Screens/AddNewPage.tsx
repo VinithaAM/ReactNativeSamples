@@ -19,16 +19,6 @@ import { AddNewItem, MasterHistoryData } from "../Services/CommonService";
 type typeprop = NativeStackScreenProps<ScreenType, "AddNew">;
 function AddNewPage(prop: typeprop) {
   const { navigation } = prop;
-  const data = [
-    { label: "Item 1", value: "1" },
-    { label: "Item 2", value: "2" },
-    { label: "Item 3", value: "3" },
-    { label: "Item 4", value: "4" },
-    { label: "Item 5", value: "5" },
-    { label: "Item 6", value: "6" },
-    { label: "Item 7", value: "7" },
-    { label: "Item 8", value: "8" },
-  ];
 
   const renderItem = (item: any) => {
     return (
@@ -64,9 +54,6 @@ function AddNewPage(prop: typeprop) {
   function onChangeValue(e: any) {
     setcorrectionValue(e);
   }
-  function onChangetime(e: any) {
-    settimeStamp(e);
-  }
   const [date, setDate] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const showDatePicker = () => {
@@ -101,14 +88,6 @@ function AddNewPage(prop: typeprop) {
       AddNewItem(params)
         .then((result: any) => {
           if (result.data != null) {
-            // toast.success("Register Successfully...", {
-            //   position: "top-right",
-            //   autoClose: 3000,
-            //   style: {
-            //     backgroundColor: "lightgreen",
-            //     color: "white",
-            //   },
-            // });
             navigation.navigate("FlatListPage");
           }
         })
@@ -131,100 +110,101 @@ function AddNewPage(prop: typeprop) {
   };
 
   return (
-    <View style={style.container}>
-      <Text style={style.textTitle}>Add New Details</Text>
-      <View style={style.insideContainer}>
-        <Text style={style.inputTitle}>HistoryName:</Text>
-        <Dropdown
-          style={style.dropdown}
-          placeholderStyle={style.placeholderStyle}
-          selectedTextStyle={style.selectedTextStyle}
-          inputSearchStyle={style.inputSearchStyle}
-          iconStyle={style.iconStyle}
-          data={masterValue}
-          search
-          maxHeight={300}
-          labelField="historyId"
-          valueField="historyId"
-          placeholder="Select item"
-          searchPlaceholder="Search..."
-          value={historyId}
-          onChange={(item) => {
-            sethistoryId(item.historyId);
-          }}
-          renderLeftIcon={() => (
-            <AntDesign
-              style={style.icon}
-              color="black"
-              name="Safety"
-              size={20}
-            />
+    <>
+      <View style={style.container}>
+        <Text style={style.textTitle}>Add New Details</Text>
+        <View style={style.insideContainer}>
+          <Text style={style.inputTitle}>HistoryName</Text>
+          <Dropdown
+            style={style.dropdown}
+            placeholderStyle={style.placeholderStyle}
+            selectedTextStyle={style.selectedTextStyle}
+            inputSearchStyle={style.inputSearchStyle}
+            iconStyle={style.iconStyle}
+            data={masterValue}
+            search
+            maxHeight={300}
+            labelField="historyId"
+            valueField="historyId"
+            placeholder="Select item"
+            searchPlaceholder="Search..."
+            value={historyId}
+            onChange={(item) => {
+              sethistoryId(item.historyId);
+            }}
+            renderLeftIcon={() => (
+              <AntDesign
+                style={style.icon}
+                color="black"
+                name="Safety"
+                size={20}
+              />
+            )}
+            renderItem={renderItem}
+          ></Dropdown>
+        </View>
+        <View style={style.insideContainer}>
+          <Text style={style.inputTitle}>StatusTag</Text>
+          <TextInput
+            placeholder="Enter the Status"
+            style={style.textInput}
+            value={status}
+            onChangeText={onChangeStatus}
+          ></TextInput>
+        </View>
+        <View style={style.insideContainer}>
+          <Text style={style.inputTitle}>Correction Value </Text>
+          <TextInput
+            keyboardType="numeric"
+            placeholder="Enter the Correction Value"
+            style={style.textInput}
+            value={correctionValue}
+            onChangeText={onChangeValue}
+          ></TextInput>
+        </View>
+        <View style={style.insideContainer}>
+          <Text style={style.inputTitle}>TimeStamp </Text>
+          <Pressable onPress={showDatePicker}>
+            <Text style={style.Datepicker}>Select TimeStamp</Text>
+          </Pressable>
+          {isDatePickerVisible && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              mode="datetime"
+              display="spinner"
+              value={date}
+              onChange={onChange}
+            ></DateTimePicker>
           )}
-          renderItem={renderItem}
-        ></Dropdown>
-      </View>
-      <View style={style.insideContainer}>
-        <Text style={style.inputTitle}>TimeStamp: </Text>
-        <Pressable onPress={showDatePicker}>
-          <Text style={style.Datepicker}>Select TimeStamp</Text>
-        </Pressable>
-        {isDatePickerVisible && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            mode="date"
-            display="spinner"
-            value={date}
-            onChange={onChange}
-            // maximumDate={new Date()}
-          ></DateTimePicker>
-        )}
-        {/* <TextInput
+          {/* <TextInput
           placeholder="Choose the Date"
           style={style.textInput}
           value={timeStamp}
           onChangeText={onChangetime}
         ></TextInput> */}
+        </View>
+        <View style={style.styleView}>
+          <TouchableOpacity
+            style={[style.buttonLogin, style.customButton]}
+            onPress={onSaveFunction}
+          >
+            <Text style={{ color: "#fff" }}>Save</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[style.buttonClear, style.customButton]}
+            onPress={handleClear}
+          >
+            <Text style={{ color: "#fff" }}> Clear</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[style.buttonCancel, style.customButton]}
+            onPress={oncancelhandle}
+          >
+            <Text style={{ color: "#fff" }}> Cancel</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={style.insideContainer}>
-        <Text style={style.inputTitle}>StatusTag : </Text>
-        <TextInput
-          placeholder="Enter the Status"
-          style={style.textInput}
-          value={status}
-          onChangeText={onChangeStatus}
-        ></TextInput>
-      </View>
-      <View style={style.insideContainer}>
-        <Text style={style.inputTitle}>Correction Value : </Text>
-        <TextInput
-          keyboardType="numeric"
-          placeholder="Enter the Correction Value"
-          style={style.textInput}
-          value={correctionValue}
-          onChangeText={onChangeValue}
-        ></TextInput>
-      </View>
-      <View style={style.styleView}>
-        <TouchableOpacity
-          style={[style.buttonLogin, style.customButton]}
-          onPress={onSaveFunction}
-        >
-          <Text style={{ color: "#fff" }}>Save</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[style.buttonClear, style.customButton]}
-          onPress={handleClear}
-        >
-          <Text style={{ color: "#fff" }}> Clear</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[style.buttonCancel, style.customButton]}
-          onPress={oncancelhandle}
-        >
-          <Text style={{ color: "#fff" }}> Cancel</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </>
   );
 }
 const width = Dimensions.get("window").width - 70;
@@ -232,32 +212,34 @@ const width = Dimensions.get("window").width - 70;
 const style = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    // backgroundColor: "aqua",
   },
   textInput: {
     borderWidth: 2,
-    borderColor: "black",
+    borderColor: "blue",
     width: 200,
     height: 40,
-    borderRadius: 25,
+    borderRadius: 15,
     paddingLeft: 15,
     marginBottom: 20,
-    // marginLeft: 30,
-    marginRight: 70,
+    alignItems: "center",
+    paddingHorizontal: 10,
+    // marginLeft: 40,
+    justifyContent: "flex-end",
   },
   inputTitle: {
-    // alignSelf: "",
-    paddingLeft: 25,
-    marginBottom: 5,
-    opacity: 0.5,
+    paddingLeft: 20,
+    // opacity: 0.5,
     color: "black",
     fontWeight: "bold",
     fontFamily: "serif",
     fontSize: 15,
-    marginRight: 25,
-    justifyContent: "flex-start",
+    marginRight: 15,
+    //marginLeft: 30,
+    // justifyContent: "center",
+    // alignItems: "baseline",
   },
   styleView: {
     flexDirection: "row",
@@ -279,6 +261,8 @@ const style = StyleSheet.create({
   },
   insideContainer: {
     flexDirection: "row",
+    textAlign: "left",
+    width: width,
   },
   buttonLogin: {
     backgroundColor: "#69f58e",
@@ -294,21 +278,23 @@ const style = StyleSheet.create({
     fontFamily: "sans-serif",
     fontSize: 25,
     textAlign: "center",
+    margin: 15,
   },
   dropdown: {
-    margin: 16,
+    margin: 10,
     height: 20,
     backgroundColor: "white",
     borderRadius: 12,
-    padding: 10,
+    padding: 15,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 1,
     },
-    width: 150,
+    width: 200,
     // marginLeft: 70,
-    marginRight: 100,
+    marginRight: 80,
+    marginLeft: 20,
   },
   placeholderStyle: {
     fontSize: 16,
@@ -323,6 +309,7 @@ const style = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+    backgroundColor: "lightgray",
   },
   icon: {
     marginRight: 5,
@@ -335,15 +322,34 @@ const style = StyleSheet.create({
   },
   textItem: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 11,
   },
   Datepicker: {
-    padding: 3,
-    borderRadius: 5,
+    padding: 5,
+    borderRadius: 10,
     marginBottom: 10,
-    backgroundColor: "green",
+    borderColor: "blue",
+    backgroundColor: "gray",
     marginRight: 100,
-    //marginLeft: 25,
+    marginLeft: 10,
+    width: 200,
+    alignContent: "center",
+    justifyContent: "center",
+    //paddingLeft: 15,
+  },
+  dropdownTitle: {
+    alignSelf: "flex-start",
+    //paddingLeft: 30,
+    marginBottom: 5,
+    opacity: 0.5,
+    color: "black",
+    fontWeight: "bold",
+    fontFamily: "serif",
+    fontSize: 15,
+    borderColor: "blue",
+    //marginRight: 100,
+    marginLeft: 50,
+    textAlign: "center",
   },
 });
 export default AddNewPage;

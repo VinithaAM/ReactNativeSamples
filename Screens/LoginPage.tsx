@@ -14,15 +14,13 @@ import {
 } from "react-native";
 import { ScreenType } from "./StackNavigation";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-//import { login } from "../Services/CommonService";
-// import { login } from "../Services/CommonService";
 import { NativeModules } from "react-native";
 import { login } from "../Services/CommonService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-type Proptype = NativeStackScreenProps<ScreenType, "LoginPage">;
+// type Proptype = NativeStackScreenProps<ScreenType, "LoginPage">;
 const { Networking } = NativeModules;
-function LoginPage(prop: Proptype) {
+function LoginPage(prop) {
   const { navigation } = prop;
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -47,12 +45,6 @@ function LoginPage(prop: Proptype) {
     };
     if (userName != undefined && userName != "") {
       if (password != undefined && password != "") {
-        // const jsonString = JSON.stringify(loginDetails);
-        // console.log(loginDetails);
-        //console.log(jsonString);
-        // fetchUser(jsonString).then((result) => {
-        //   console.log(result);
-        // });
         login(loginDetails)
           .then((result) => {
             // console.log(result);
@@ -65,14 +57,6 @@ function LoginPage(prop: Proptype) {
 
                 result.data.data.token
               );
-              // localStorage.setItem(
-              //   "LoginResponse",
-              //   JSON.stringify(result.data.data)
-              // );
-              // sessionStorage.setItem(
-              //   "Loginresponse",a
-              //   JSON.stringify(result.data.data)
-              // );
               navigation.navigate("FlatListPage");
             }
           })
@@ -80,56 +64,6 @@ function LoginPage(prop: Proptype) {
             console.log("Error occurred", error);
             // Handle the error here (e.g., show error message, perform error-related actions)
           });
-        // console.log(jsonString);
-        // axios
-        //   .post("https://10.6.12.2/api/Login", loginDetails)
-        //   .then((response) => {
-        //     console.log("data", response);
-        //   })
-        //   .catch((error) => {
-        //     console.log("error", error);
-        //   });
-        // axios
-        //   .post("https://10.6.12.2/api/Login", jsonString)
-
-        //   .then((result) => {
-        //     if (result.data.status === "Failed") {
-        //       // Toast.show(result.data.message, Toast.SHORT);
-        //       alert(result.data.message);
-        //     } else if (result.data.status === "Success") {
-        //       navigation.navigate("FlatListPage");
-        //       console.log("lo", result.data.data);
-        //       localStorage.setItem(
-        //         "LoginResponse",
-        //         JSON.stringify(result.data.data)
-        //       );
-        //     }
-        //   })
-        //   // (result={}) => ToastAndroid.show("Sucess", ToastAndroid.LONG))
-        //   .catch((error) =>
-        //     //ToastAndroid.show(error.message, ToastAndroid.LONG)
-        //     console.log("err", error)
-        //   );
-        // fetch("http://localhost:7028/api/Login", {
-        //   method: "POST",
-        //   body: jsonString,
-        //   headers: {
-        //     "Content-type": "application/json",
-        //     Accept: "application/json",
-        //   },
-        // })
-        //   .then((response) => {
-        //     if (!response.ok) {
-        //       throw new Error("Network response was not OK");
-        //     }
-
-        //     return response.json();
-        //   })
-        //   .then((json) =>
-        //     localStorage.setItem("LoginResponse", JSON.stringify(json.data))
-        //   );
-
-        //navigation.navigate("FlatListPage");
       } else {
         alert("Please Provide Valid Password .....");
       }
@@ -137,6 +71,37 @@ function LoginPage(prop: Proptype) {
       alert("Please Provide Valid UserName ....");
     }
   };
+  const onHadleSignup = () => {
+    navigation.navigate("RegistrationPage");
+  };
+  const [validationMessage, setValidationMessage] = useState("");
+  const validatePassword = (password) => {
+    // Password policies
+    const minLength = 8;
+    const maxLength = 20;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
+
+    // Check against policies
+    if (password.length < minLength || password.length > maxLength) {
+      setValidationMessage("Password must be between 8 and 20 characters");
+    } else if (!hasUppercase || !hasLowercase) {
+      setValidationMessage(
+        "Password must contain both uppercase and lowercase letters"
+      );
+    } else if (!hasNumber) {
+      setValidationMessage("Password must contain at least one number");
+    } else if (!hasSpecialChar) {
+      setValidationMessage(
+        "Password must contain at least one special character"
+      );
+    } else {
+      setValidationMessage("Password is valid");
+    }
+  };
+
   return (
     <View style={style.container}>
       <Text style={style.textTitle}>Sign In</Text>
@@ -146,14 +111,23 @@ function LoginPage(prop: Proptype) {
         style={style.textInput}
         value={userName}
         onChangeText={onChangeUsername}
+        maxLength={30}
       ></TextInput>
       <Text style={style.inputTitle}>Password</Text>
       <TextInput
         placeholder="Enter the Password"
         style={style.textInput}
         value={password}
+        maxLength={30}
+        secureTextEntry={true}
         onChangeText={onChangePassword}
+        onKeyPress={validatePassword}
       ></TextInput>
+      {validationMessage !== "" && (
+        <View style={style.errorMessage}>
+          <Text style={style.errorText}>{validationMessage}</Text>
+        </View>
+      )}
       <View style={style.styleView}>
         <TouchableOpacity
           style={[style.buttonLogin, style.customButton]}
@@ -161,7 +135,7 @@ function LoginPage(prop: Proptype) {
         >
           <Text style={{ color: "#fff" }}>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[style.buttonClear, style.customButton]}
           onPress={onPressClear}
         >
@@ -172,6 +146,14 @@ function LoginPage(prop: Proptype) {
           onPress={oncancelhandle}
         >
           <Text style={{ color: "#fff" }}> Cancel</Text>
+        </TouchableOpacity> */}
+
+        <TouchableOpacity
+          style={[style.button, style.signup]}
+          onPress={onHadleSignup}
+        >
+          <Text style={style.buttonText}>SignUp for free</Text>
+          {/* <Text style={style.buttonText}>You Don't have Account?</Text> */}
         </TouchableOpacity>
       </View>
     </View>
@@ -213,15 +195,19 @@ const style = StyleSheet.create({
     textAlign: "center",
   },
   customButton: {
-    padding: 10,
+    padding: 15,
     borderRadius: 5,
     marginLeft: 1,
     marginRight: 8,
     borderColor: "blue",
   },
   buttonLogin: {
-    backgroundColor: "#69f58e",
+    backgroundColor: "green",
     textAlign: "center",
+    width: "40%",
+    height: 50,
+    borderRadius: 10,
+    alignItems: "center",
   },
   buttonClear: {
     backgroundColor: "#131413",
@@ -233,6 +219,26 @@ const style = StyleSheet.create({
     fontFamily: "sans-serif",
     fontSize: 25,
     textAlign: "center",
+  },
+  signup: {
+    backgroundColor: "#4267B2",
+  },
+  button: {
+    width: "40%",
+    height: 50,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  errorMessage: {
+    marginTop: 10,
+  },
+  errorText: {
+    color: "red",
   },
 });
 export default LoginPage;

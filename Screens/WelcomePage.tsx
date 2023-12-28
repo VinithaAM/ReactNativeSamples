@@ -36,12 +36,12 @@ function WelcomePage(prop: Proptype) {
         >
           <Text style={style.buttonText}>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[style.button, style.signup]}
           onPress={onHadleSignup}
         >
           <Text style={style.buttonText}>SignUp for free</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );

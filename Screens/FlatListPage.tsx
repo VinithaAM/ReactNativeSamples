@@ -12,6 +12,9 @@ import {
   StyleSheet,
   Pressable,
   TouchableOpacity,
+  Dimensions,
+  Modal,
+  Button,
 } from "react-native";
 import { IHistoryDataCorrection } from "../Components/HistoryDataCorrectionModel";
 import CommonGrid from "../Components/CommonGrid";
@@ -31,7 +34,7 @@ type Proptype = NativeStackScreenProps<ScreenType, "FlatListPage">;
 function DataCorrectionListPage(prop: Proptype) {
   const { navigation } = prop;
   const [CorrectionData, setCorrectionData] = useState();
-  const [columns, setColumns] = useState(2);
+  const [columns, setColumns] = useState(1);
   const [ListData, setListData] = useState([]);
   const getHistoryData = () => {
     getHistoryCorrection().then((result) => {
@@ -63,10 +66,17 @@ function DataCorrectionListPage(prop: Proptype) {
   const handletoken = async () => {
     getHistoryData();
   };
-  function renderItem(e: any) {
-    renderEach(e);
+  function renderItems(e: any) {
     return (
-      <CommonGrid title={e.item.historyId} color={e.item.color}></CommonGrid>
+      <>
+        <CommonGrid title={e.item}></CommonGrid>
+
+        {/* <TouchableOpacity onPress={() => showModal(e)}>
+          <View style={style.items}>
+            <Text>{e.item.historyId}</Text>
+          </View>
+        </TouchableOpacity> */}
+      </>
     );
   }
   const keyExtractor = (item: { id: number }) => {
@@ -76,50 +86,39 @@ function DataCorrectionListPage(prop: Proptype) {
     navigation.navigate("AddNew");
   }
   const elementsRef = useRef(ListData?.map(() => createRef()));
-  const onCardPress = (item, newRef) => {
-    newRef?.current?.measureInWindow((fx, fy, width, height, px, py) => {
-      console.log("Component width is: " + width);
-      console.log("Component height is: " + height);
-      console.log("X offset to frame: " + fx);
-      console.log("Y offset to frame: " + fy);
-      console.log("X offset to page: " + px);
-      console.log("Y offset to page: " + py);
+  // const [topH, setTop] = useState(0);
+  // const renderEach = ({ item, index }) => {
+  //   return (
+  //     <TouchableOpacity
+  //       onPress={() => onCardPress(item, elementsRef?.current[index])}
+  //       style={style.eachCard}
+  //     >
+  //       {/* ref={elementsRef?.current[index]} */}
+  //       <Text>{item}</Text>
+  //     </TouchableOpacity>
+  //   );
+  // };
 
-      setTop(fy);
-    });
-  };
-  const [topH, setTop] = useState(0);
-  const renderEach = ({ item, index }) => {
-    return (
-      <TouchableOpacity
-        onPress={() => onCardPress(item, elementsRef?.current[index])}
-        style={style.eachCard}
-      >
-        {/* ref={elementsRef?.current[index]} */}
-        <Text>{item}</Text>
-      </TouchableOpacity>
-    );
-  };
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const Popup = () => {
-    if (topH === 0) {
-      return null;
-    }
+  const renderItem = ({ item }) => {
     return (
-      <View
-        style={{
-          backgroundColor: "yellow",
-          position: "absolute",
-          zIndex: 3,
-          height: 60,
-          width: 60,
-          right: 30,
-          top: topH,
-        }}
-      >
-        <Text> popup </Text>
+      <View style={style.item}>
+        <Text>{item.title}</Text>
+        <Button title="View Details" onPress={() => showModal(item)} />
       </View>
     );
+  };
+
+  const showModal = (item) => {
+    setSelectedItem(item.item);
+    console.log("data", item);
+    setModalVisible(true);
+  };
+
+  const hideModal = () => {
+    setModalVisible(false);
   };
   return (
     <View style={style.container}>
@@ -130,26 +129,27 @@ function DataCorrectionListPage(prop: Proptype) {
         style={style.List}
         data={ListData}
         keyExtractor={keyExtractor}
-        renderItem={renderItem}
+        renderItem={renderItems}
         numColumns={columns}
         key={columns}
       ></FlatList>
     </View>
   );
 }
+const width = Dimensions.get("window").width - 70;
 const style = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    margin: 15,
+    margin: 10,
     // backgroundColor: "aqua",
   },
   List: {
-    marginTop: 30,
+    marginTop: 10,
   },
   newButton: {
-    padding: 10,
+    padding: 8,
     backgroundColor: "green",
     borderRadius: 10,
     alignSelf: "flex-end",
@@ -157,10 +157,33 @@ const style = StyleSheet.create({
   },
   eachCard: {
     height: 100,
-    margin: 10,
+    margin: 15,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#850D5F",
+  },
+  item: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+  items: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 10,
+    padding: 20,
+    backgroundColor: "#eee",
+    borderRadius: 5,
+  },
+  modalView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
   },
 });
 export default DataCorrectionListPage;
